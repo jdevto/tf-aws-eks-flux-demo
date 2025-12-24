@@ -4,6 +4,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: go-demo
+  namespace: default
   annotations:
     # Use AWS Load Balancer Controller
     kubernetes.io/ingress.class: alb

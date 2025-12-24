@@ -4,6 +4,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: nginx-demo
+  namespace: default
   annotations:
     # Use AWS Load Balancer Controller
     kubernetes.io/ingress.class: alb
@@ -41,4 +42,3 @@ spec:
                 name: nginx-demo
                 port:
                   number: 80
-

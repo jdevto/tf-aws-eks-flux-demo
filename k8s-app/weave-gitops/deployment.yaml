@@ -21,7 +21,7 @@ spec:
       serviceAccountName: weave-gitops
       containers:
         - name: weave-gitops
-          image: ghcr.io/weaveworks/weave-gitops:latest
+          image: ghcr.io/weaveworks/wego-app:latest
           ports:
             - containerPort: 9001
               name: http
