@@ -1,0 +1,35 @@
+# Example Ingress for go-demo using shared ALB
+# This Ingress will share the same ALB with nginx-demo via the group.name annotation
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: go-demo
+  annotations:
+    # Use AWS Load Balancer Controller
+    kubernetes.io/ingress.class: alb
+    # Share ALB with other Ingresses using the same group name
+    alb.ingress.kubernetes.io/group.name: demo-apps
+    # Internet-facing ALB
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    # Target type: IP (direct pod targeting)
+    alb.ingress.kubernetes.io/target-type: ip
+    # Health check configuration
+    alb.ingress.kubernetes.io/healthcheck-path: /
+    alb.ingress.kubernetes.io/healthcheck-interval-seconds: "15"
+    alb.ingress.kubernetes.io/healthcheck-timeout-seconds: "5"
+    alb.ingress.kubernetes.io/healthy-threshold-count: "2"
+    alb.ingress.kubernetes.io/unhealthy-threshold-count: "2"
+    # Load balancer attributes
+    alb.ingress.kubernetes.io/load-balancer-attributes: idle_timeout.timeout_seconds=60
+spec:
+  rules:
+    - http:
+        paths:
+          # Path-based routing: /go-demo/* routes to go-demo service
+          - path: /go-demo
+            pathType: Prefix
+            backend:
+              service:
+                name: go-demo
+                port:
+                  number: 8080

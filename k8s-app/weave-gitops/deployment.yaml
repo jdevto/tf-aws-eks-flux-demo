@@ -1,0 +1,91 @@
+# Weave GitOps Core - Deployment
+# Install using the official installation method
+# Reference: https://docs.gitops.weave.works/docs/open-source/getting-started/install-OSS/
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: weave-gitops
+  namespace: flux-system
+  labels:
+    app: weave-gitops
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: weave-gitops
+  template:
+    metadata:
+      labels:
+        app: weave-gitops
+    spec:
+      serviceAccountName: weave-gitops
+      containers:
+        - name: weave-gitops
+          image: ghcr.io/weaveworks/weave-gitops:latest
+          ports:
+            - containerPort: 9001
+              name: http
+          env:
+            - name: GITOPS_NAMESPACE
+              value: flux-system
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: weave-gitops
+  namespace: flux-system
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9001
+      targetPort: 9001
+      protocol: TCP
+      name: http
+  selector:
+    app: weave-gitops
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: weave-gitops
+  namespace: flux-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: weave-gitops
+rules:
+  - apiGroups: [""]
+    resources: ["*"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["apps"]
+    resources: ["*"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups:
+      [
+        "source.toolkit.fluxcd.io",
+        "kustomize.toolkit.fluxcd.io",
+        "helm.toolkit.fluxcd.io",
+      ]
+    resources: ["*"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: weave-gitops
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: weave-gitops
+subjects:
+  - kind: ServiceAccount
+    name: weave-gitops
+    namespace: flux-system
