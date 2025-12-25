@@ -1,5 +1,5 @@
-# Flux module - Install Flux v2 via Helm
-# This module only installs Flux. Workloads should be managed separately via GitOps.
+# Flux module - Install Flux v2 via Helm and bootstrap workloads
+# This module installs Flux and optionally bootstraps GitRepository and Kustomizations
 
 resource "kubernetes_namespace" "flux_system" {
   metadata {
@@ -135,5 +135,73 @@ resource "kubernetes_secret" "weave_gitops_tls" {
   depends_on = [
     kubernetes_namespace.flux_system,
     tls_self_signed_cert.weave_gitops_tls
+  ]
+}
+
+# ============================================================================
+# Workloads Bootstrap (GitRepository and Kustomizations)
+# ============================================================================
+
+# Extract repo name from URL if git_repository_name not provided
+locals {
+  git_repo_name = var.git_repository_name != null ? var.git_repository_name : (
+    var.repo_url != null ? replace(replace(basename(var.repo_url), ".git", ""), "/", "-") : null
+  )
+}
+
+# Bootstrap GitRepository CR (only if repo_url is provided)
+resource "kubectl_manifest" "git_repository" {
+  count = var.repo_url != null ? 1 : 0
+
+  yaml_body = yamlencode({
+    apiVersion = "source.toolkit.fluxcd.io/v1"
+    kind       = "GitRepository"
+    metadata = {
+      name      = local.git_repo_name
+      namespace = kubernetes_namespace.flux_system.metadata[0].name
+    }
+    spec = {
+      url      = var.repo_url
+      interval = var.sync_interval
+      ref = {
+        branch = var.repo_branch
+      }
+      secretRef = var.git_secret_name != null ? {
+        name = var.git_secret_name
+      } : null
+    }
+  })
+
+  depends_on = [
+    helm_release.flux,
+    kubernetes_namespace.flux_system
+  ]
+}
+
+# Bootstrap Kustomizations for each workload (only if workloads are provided)
+resource "kubectl_manifest" "kustomization" {
+  for_each = var.repo_url != null && length(var.workloads) > 0 ? { for w in var.workloads : w.name => w } : {}
+
+  yaml_body = yamlencode({
+    apiVersion = "kustomize.toolkit.fluxcd.io/v1"
+    kind       = "Kustomization"
+    metadata = {
+      name      = each.value.name
+      namespace = kubernetes_namespace.flux_system.metadata[0].name
+    }
+    spec = {
+      interval = each.value.sync_interval != null ? each.value.sync_interval : var.sync_interval
+      path     = each.value.path
+      prune    = each.value.prune != null ? each.value.prune : true
+      sourceRef = {
+        kind = "GitRepository"
+        name = local.git_repo_name
+      }
+      validation = each.value.validation != null ? each.value.validation : "client"
+    }
+  })
+
+  depends_on = [
+    kubectl_manifest.git_repository
   ]
 }

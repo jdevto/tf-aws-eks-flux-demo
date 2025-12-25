@@ -27,25 +27,22 @@ module "eks" {
   depends_on = [module.vpc]
 }
 
-# Flux Module - Installs Flux only
+# Flux Module - Installs Flux and bootstraps workloads
 module "flux" {
   source = "./modules/flux"
 
-  depends_on = [module.eks]
-}
+  weave_gitops_username = var.weave_gitops_username
 
-# Flux Workloads Module - Bootstraps GitRepository and Kustomizations
-module "flux_workloads" {
-  source = "./modules/flux-workloads"
-
+  # Workloads configuration
   repo_url      = var.repo_url
   repo_branch   = var.repo_branch
   sync_interval = var.flux_sync_interval
 
-  flux_namespace = module.flux.flux_namespace
-  flux_ready     = module.flux.flux_release_name
-
   workloads = [
+    {
+      name = "weave-gitops"
+      path = "k8s-app/weave-gitops"
+    },
     {
       name = "welcome"
       path = "k8s-app/welcome"
@@ -56,13 +53,18 @@ module "flux_workloads" {
     },
     {
       name = "podinfo-dev"
-      path = "k8s-app/podinfo"
+      path = "k8s-app/podinfo/dev"
     },
     {
-      name = "weave-gitops"
-      path = "k8s-app/weave-gitops"
+      name = "podinfo-staging"
+      path = "k8s-app/podinfo/staging"
+    },
+    {
+      name = "podinfo-prod"
+      path = "k8s-app/podinfo/prod"
     }
   ]
 
-  depends_on = [module.flux]
+  depends_on = [module.eks]
 }
+

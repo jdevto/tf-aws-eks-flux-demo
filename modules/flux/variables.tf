@@ -15,3 +15,46 @@ variable "weave_gitops_username" {
   type        = string
   default     = "admin"
 }
+
+# Workloads configuration
+variable "repo_url" {
+  description = "Git repository URL containing the workload manifests"
+  type        = string
+  default     = null
+}
+
+variable "repo_branch" {
+  description = "Git repository branch to sync from"
+  type        = string
+  default     = "main"
+}
+
+variable "git_repository_name" {
+  description = "Name for the Flux GitRepository Kubernetes resource. If null, derived from repo_url."
+  type        = string
+  default     = null
+}
+
+variable "sync_interval" {
+  description = "Default sync interval for workloads"
+  type        = string
+  default     = "5m"
+}
+
+variable "git_secret_name" {
+  description = "Name of Kubernetes secret containing Git credentials (for private repos). Leave null for public repos."
+  type        = string
+  default     = null
+}
+
+variable "workloads" {
+  description = "List of workloads to create Kustomizations for. If empty, no workloads are bootstrapped."
+  type = list(object({
+    name          = string
+    path          = string
+    sync_interval = optional(string)
+    prune         = optional(bool)
+    validation    = optional(string)
+  }))
+  default = []
+}

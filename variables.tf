@@ -33,6 +33,12 @@ variable "flux_sync_interval" {
   default     = "5m"
 }
 
+variable "weave_gitops_username" {
+  description = "Username for Weave GitOps cluster user authentication"
+  type        = string
+  default     = "admin"
+}
+
 variable "tags" {
   description = "Common tags to apply to all resources"
   type        = map(string)

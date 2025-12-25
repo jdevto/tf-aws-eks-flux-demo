@@ -146,7 +146,7 @@ curl http://$ALB_URL/podinfo-prod      # Prod environment
 ## 🎨 Environment Differences
 
 | Environment | Replicas | Color | Resources | Namespace | Path |
-|------------|----------|-------|-----------|-----------|------|
+| ------------ | ---------- | ------- | ----------- | ----------- | ------ |
 | **Dev** | 1 | Red (#ff6b6b) | 200m CPU, 256Mi RAM | podinfo-dev | `/podinfo-dev` |
 | **Staging** | 2 | Yellow (#ffc107) | 300m CPU, 384Mi RAM | podinfo-staging | `/podinfo-staging` |
 | **Prod** | 3 | Green (#6bcf7f) | 500m CPU, 512Mi RAM | podinfo-prod | `/podinfo-prod` |
@@ -280,4 +280,3 @@ The nginx sidecar for path rewriting is useful when:
 ✅ **Reconciliation Status**
 ✅ **Weave GitOps UI Integration**
 ✅ **Sidecar Pattern** (nginx for path rewriting)
-

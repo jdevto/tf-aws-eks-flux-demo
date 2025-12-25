@@ -9,7 +9,7 @@ Terraform demo for Amazon EKS with Flux GitOps.
   * EKS (from local module `modules/eks`, using native AWS resources)
   * AWS Load Balancer Controller (installed via Helm with IRSA) for ALB management
   * Flux (installed via Helm)
-  * Flux Workloads (bootstraps `GitRepository` and `Kustomization` CRs via `modules/flux-workloads`)
+  * Flux Workloads (bootstraps `GitRepository` and `Kustomization` CRs via `modules/flux`)
 * **Flux** then fully manages **sample workloads**:
   * **podinfo** (multi-environment GitOps with image automation) from `k8s-app/podinfo`
   * **simple-app** (basic GitOps sync demo) from `k8s-app/simple-app`
@@ -31,7 +31,6 @@ Terraform demo for Amazon EKS with Flux GitOps.
 │   ├── vpc
 │   ├── eks
 │   ├── flux
-│   └── flux-workloads
 └── k8s-app
     ├── podinfo
     ├── simple-app
@@ -150,7 +149,6 @@ Because Terraform bootstraps the Flux `GitRepository` and `Kustomization` CRs (w
 If you hit `Kubernetes cluster unreachable` during destroy, do a 2-phase destroy (addons first, then infra):
 
 ```bash
-terraform destroy -target=module.flux_workloads -auto-approve
 terraform destroy -target=module.flux -auto-approve
 terraform destroy -auto-approve
 ```

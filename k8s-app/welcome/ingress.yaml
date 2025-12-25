@@ -16,7 +16,6 @@ metadata:
     alb.ingress.kubernetes.io/unhealthy-threshold-count: "2"
     alb.ingress.kubernetes.io/load-balancer-attributes: idle_timeout.timeout_seconds=60
     alb.ingress.kubernetes.io/group.order: "100"
-    alb.ingress.kubernetes.io/load-balancer-attributes: idle_timeout.timeout_seconds=60
 spec:
   rules:
     - http:
