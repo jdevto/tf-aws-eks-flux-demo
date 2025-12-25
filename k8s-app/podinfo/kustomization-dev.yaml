@@ -15,4 +15,3 @@ spec:
       kind: Deployment
       name: podinfo
       namespace: podinfo-dev
-

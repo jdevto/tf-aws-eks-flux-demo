@@ -24,4 +24,3 @@ spec:
                 name: simple-app
                 port:
                   number: 80
-

@@ -106,7 +106,7 @@ data:
                     <div class="app-description">Advanced Flux features: Multi-env promotion, Image automation, Kustomize overlays</div>
                     <span class="badge badge-bluegreen">Dev → Staging → Prod</span>
                 </a>
-                
+
                 <a href="/simple" class="app-card">
                     <div class="app-title">Simple App</div>
                     <div class="app-description">Basic GitOps sync demonstration</div>
