@@ -31,16 +31,6 @@ spec:
           env:
             - name: GITOPS_NAMESPACE
               value: flux-system
-            - name: CLUSTER_USER_AUTH_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: cluster-user-auth
-                  key: username
-            - name: CLUSTER_USER_AUTH_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: cluster-user-auth
-                  key: password
           resources:
             limits:
               cpu: 500m
