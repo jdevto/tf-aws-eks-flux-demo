@@ -1,0 +1,20 @@
+# Preview Service - Routes to the preview version (green) for testing before promotion
+# This service allows testing the new version without affecting production traffic
+# Access via port-forward or separate ingress if needed
+apiVersion: v1
+kind: Service
+metadata:
+  name: go-demo-preview
+  namespace: default
+  labels:
+    app: go-demo
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+      name: http
+  selector:
+    app: go-demo
+    version: green # Preview service always points to green (new version)
