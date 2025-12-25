@@ -21,3 +21,14 @@ output "git_repository_name" {
   description = "Name of the Flux GitRepository resource"
   value       = module.flux_workloads.git_repository_name
 }
+
+output "weave_gitops_username" {
+  description = "Username for Weave GitOps authentication"
+  value       = module.flux.weave_gitops_username
+}
+
+output "weave_gitops_password" {
+  description = "Generated password for Weave GitOps authentication"
+  value       = module.flux.weave_gitops_password
+  sensitive   = true
+}

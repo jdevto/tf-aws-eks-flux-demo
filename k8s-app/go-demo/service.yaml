@@ -1,0 +1,20 @@
+# Blue/Green Deployment Strategy for go-demo
+# Active Service - Routes production traffic to the active version (blue or green)
+# To switch versions, update the selector to point to the desired version
+apiVersion: v1
+kind: Service
+metadata:
+  name: go-demo
+  namespace: default
+  labels:
+    app: go-demo
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 8080
+      protocol: TCP
+      name: http
+  selector:
+    app: go-demo
+    version: blue # Change to "green" to switch traffic to green deployment

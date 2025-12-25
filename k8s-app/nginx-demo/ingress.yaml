@@ -1,5 +1,6 @@
-# Example Ingress for nginx-demo using shared ALB
-# This Ingress will share the same ALB with go-demo via the group.name annotation
+# Canary Deployment Ingress for nginx-demo using shared ALB
+# This Ingress supports canary traffic splitting via ALB weighted target groups
+# Traffic is split between nginx-demo-stable (primary) and nginx-demo-canary (canary)
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -22,23 +23,37 @@ metadata:
     alb.ingress.kubernetes.io/unhealthy-threshold-count: "2"
     # Load balancer attributes
     alb.ingress.kubernetes.io/load-balancer-attributes: idle_timeout.timeout_seconds=60
+    # Canary traffic splitting using ALB weighted target groups
+    # Adjust weights to control canary percentage (weights must sum to 100)
+    # Current: 75% stable, 25% canary
+    # To change: modify the weights below (e.g., 90/10, 50/50, etc.)
+    alb.ingress.kubernetes.io/actions.nginx-canary: |
+      {
+        "Type": "forward",
+        "ForwardConfig": {
+          "TargetGroups": [
+            {"ServiceName": "nginx-demo-stable", "ServicePort": "80", "Weight": 75},
+            {"ServiceName": "nginx-demo-canary", "ServicePort": "80", "Weight": 25}
+          ]
+        }
+      }
 spec:
   rules:
     - http:
         paths:
-          # Path-based routing: /nginx-demo/* routes to nginx-demo service
+          # Path-based routing: /nginx-demo/* routes to canary-weighted action
           - path: /nginx-demo
             pathType: Prefix
             backend:
               service:
-                name: nginx-demo
+                name: nginx-canary
                 port:
-                  number: 80
-          # Root path also routes to nginx-demo (can be changed based on priority)
+                  name: use-annotation
+          # Root path also routes to canary-weighted action
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: nginx-demo
+                name: nginx-canary
                 port:
-                  number: 80
+                  name: use-annotation
