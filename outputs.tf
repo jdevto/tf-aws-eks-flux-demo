@@ -27,3 +27,31 @@ output "weave_gitops_password" {
   value       = module.flux.weave_gitops_password
   sensitive   = true
 }
+
+# Get Weave GitOps ALB URL from Ingress
+data "kubernetes_ingress_v1" "weave_gitops" {
+  metadata {
+    name      = "weave-gitops"
+    namespace = "flux-system"
+  }
+  depends_on = [module.flux]
+}
+
+# Get shared ALB URL from welcome Ingress (represents the shared ALB for all demo apps)
+data "kubernetes_ingress_v1" "shared_alb" {
+  metadata {
+    name      = "welcome"
+    namespace = "default"
+  }
+  depends_on = [module.flux]
+}
+
+output "weave_gitops_alb_url" {
+  description = "ALB URL for Weave GitOps dashboard"
+  value       = try(data.kubernetes_ingress_v1.weave_gitops.status[0].load_balancer[0].ingress[0].hostname, "Not available yet - Ingress may still be provisioning")
+}
+
+output "shared_alb_url" {
+  description = "Shared ALB URL for demo applications (welcome, podinfo, simple-app)"
+  value       = try(data.kubernetes_ingress_v1.shared_alb.status[0].load_balancer[0].ingress[0].hostname, "Not available yet - Ingress may still be provisioning")
+}
