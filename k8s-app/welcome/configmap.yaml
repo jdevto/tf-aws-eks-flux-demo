@@ -1,0 +1,119 @@
+# Welcome page HTML content
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: welcome-html
+  namespace: default
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Flux GitOps Demo - Welcome</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+            }
+            .container {
+                background: white;
+                border-radius: 20px;
+                box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+                padding: 40px;
+                max-width: 600px;
+                width: 100%;
+                text-align: center;
+            }
+            h1 {
+                color: #333;
+                margin-bottom: 10px;
+                font-size: 2.5em;
+            }
+            .subtitle {
+                color: #666;
+                margin-bottom: 40px;
+                font-size: 1.1em;
+            }
+            .apps {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+                margin-top: 30px;
+            }
+            .app-card {
+                background: #f8f9fa;
+                border: 2px solid #e9ecef;
+                border-radius: 12px;
+                padding: 25px;
+                text-decoration: none;
+                color: #333;
+                transition: all 0.3s ease;
+                display: block;
+            }
+            .app-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+                border-color: #667eea;
+            }
+            .app-title {
+                font-size: 1.5em;
+                font-weight: bold;
+                margin-bottom: 8px;
+                color: #667eea;
+            }
+            .app-description {
+                color: #666;
+                font-size: 0.95em;
+            }
+            .badge {
+                display: inline-block;
+                padding: 4px 12px;
+                border-radius: 12px;
+                font-size: 0.75em;
+                font-weight: bold;
+                margin-top: 8px;
+            }
+            .badge-canary {
+                background: #fff3cd;
+                color: #856404;
+            }
+            .badge-bluegreen {
+                background: #d1ecf1;
+                color: #0c5460;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>🚀 Flux GitOps Demo</h1>
+            <p class="subtitle">Welcome to the EKS + Flux + Weave GitOps demonstration</p>
+            
+            <div class="apps">
+                <a href="/nginx-demo" class="app-card">
+                    <div class="app-title">Nginx Demo</div>
+                    <div class="app-description">Canary deployment strategy demonstration</div>
+                    <span class="badge badge-canary">Canary (75% stable, 25% canary)</span>
+                </a>
+                
+                <a href="/go-demo" class="app-card">
+                    <div class="app-title">Go Demo</div>
+                    <div class="app-description">Blue/Green deployment strategy demonstration</div>
+                    <span class="badge badge-bluegreen">Blue/Green (Blue active)</span>
+                </a>
+            </div>
+        </div>
+    </body>
+    </html>
+

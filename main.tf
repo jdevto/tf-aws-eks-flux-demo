@@ -47,6 +47,10 @@ module "flux_workloads" {
 
   workloads = [
     {
+      name = "welcome"
+      path = "k8s-app/welcome"
+    },
+    {
       name = "nginx-demo"
       path = "k8s-app/nginx-demo"
     },

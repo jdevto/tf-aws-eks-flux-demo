@@ -1,0 +1,39 @@
+# Welcome page deployment - serves a landing page with links to demo apps
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: welcome
+  namespace: default
+  labels:
+    app: welcome
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: welcome
+  template:
+    metadata:
+      labels:
+        app: welcome
+    spec:
+      containers:
+        - name: welcome
+          image: nginx:alpine
+          ports:
+            - containerPort: 80
+              name: http
+          volumeMounts:
+            - name: welcome-html
+              mountPath: /usr/share/nginx/html
+          resources:
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+      volumes:
+        - name: welcome-html
+          configMap:
+            name: welcome-html
+

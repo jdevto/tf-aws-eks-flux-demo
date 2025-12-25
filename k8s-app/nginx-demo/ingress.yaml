@@ -49,11 +49,3 @@ spec:
                 name: nginx-canary
                 port:
                   name: use-annotation
-          # Root path also routes to canary-weighted action
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: nginx-canary
-                port:
-                  name: use-annotation
