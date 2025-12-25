@@ -51,12 +51,12 @@ module "flux_workloads" {
       path = "k8s-app/welcome"
     },
     {
-      name = "nginx-demo"
-      path = "k8s-app/nginx-demo"
+      name = "simple-app"
+      path = "k8s-app/simple-app"
     },
     {
-      name = "go-demo"
-      path = "k8s-app/go-demo"
+      name = "podinfo-dev"
+      path = "k8s-app/podinfo"
     },
     {
       name = "weave-gitops"

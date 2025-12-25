@@ -1,17 +1,14 @@
-# Welcome page service
 apiVersion: v1
 kind: Service
 metadata:
-  name: welcome
-  namespace: default
-  labels:
-    app: welcome
+  name: podinfo
 spec:
   type: ClusterIP
   ports:
     - port: 80
-      targetPort: 80
+      targetPort: http
       protocol: TCP
       name: http
   selector:
-    app: welcome
+    app: podinfo
+

@@ -99,21 +99,20 @@ data:
         <div class="container">
             <h1>🚀 Flux GitOps Demo</h1>
             <p class="subtitle">Welcome to the EKS + Flux + Weave GitOps demonstration</p>
-            
+
             <div class="apps">
-                <a href="/nginx-demo" class="app-card">
-                    <div class="app-title">Nginx Demo</div>
-                    <div class="app-description">Canary deployment strategy demonstration</div>
-                    <span class="badge badge-canary">Canary (75% stable, 25% canary)</span>
+                <a href="/podinfo" class="app-card">
+                    <div class="app-title">Podinfo - Multi-Environment GitOps</div>
+                    <div class="app-description">Advanced Flux features: Multi-env promotion, Image automation, Kustomize overlays</div>
+                    <span class="badge badge-bluegreen">Dev → Staging → Prod</span>
                 </a>
                 
-                <a href="/go-demo" class="app-card">
-                    <div class="app-title">Go Demo</div>
-                    <div class="app-description">Blue/Green deployment strategy demonstration</div>
-                    <span class="badge badge-bluegreen">Blue/Green (Blue active)</span>
+                <a href="/simple" class="app-card">
+                    <div class="app-title">Simple App</div>
+                    <div class="app-description">Basic GitOps sync demonstration</div>
+                    <span class="badge badge-canary">Basic GitOps</span>
                 </a>
             </div>
         </div>
     </body>
     </html>
-

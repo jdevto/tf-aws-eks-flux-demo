@@ -153,5 +153,5 @@ roleRef:
   name: weave-gitops-emergency-admin
 subjects:
   - kind: User
-    name: admin  # MUST match the username in cluster-user-auth secret
+    name: admin # MUST match the username in cluster-user-auth secret
     apiGroup: rbac.authorization.k8s.io
