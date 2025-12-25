@@ -15,12 +15,15 @@ Advanced Flux GitOps demonstration featuring:
 - Kustomize overlays for environment-specific configurations
 - Dependency management between environments
 - Health monitoring and reconciliation status
+- Nginx sidecar for path rewriting (ALB compatibility)
 
 **Environments:**
 
-- `podinfo-dev` - Development (1 replica, red theme)
-- `podinfo-staging` - Staging (2 replicas, yellow theme)
-- `podinfo-prod` - Production (3 replicas, green theme)
+- `podinfo-dev` - Development (1 replica, red theme) - Accessible at `/podinfo-dev`
+- `podinfo-staging` - Staging (2 replicas, yellow theme) - Accessible at `/podinfo-staging`
+- `podinfo-prod` - Production (3 replicas, green theme) - Accessible at `/podinfo-prod`
+
+**Documentation:** See [`MULTI_ENV_GITOPS_DEMO.md`](../MULTI_ENV_GITOPS_DEMO.md) for detailed documentation, use cases, and architecture details.
 
 ### Simple App - Basic GitOps
 
@@ -57,7 +60,9 @@ All applications use **shared ALB** via Ingress resources instead of LoadBalance
 
 3. **Path-based Routing**
    - `/` → Welcome page
-   - `/podinfo` → Podinfo application
+   - `/podinfo-dev` → Podinfo Dev environment
+   - `/podinfo-staging` → Podinfo Staging environment
+   - `/podinfo-prod` → Podinfo Prod environment
    - `/simple` → Simple app
 
 ### Example Service (ClusterIP)

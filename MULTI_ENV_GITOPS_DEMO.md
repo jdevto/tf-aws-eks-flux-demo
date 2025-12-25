@@ -34,7 +34,7 @@ This demo showcases **advanced Flux GitOps capabilities**:
 ## 📁 Structure
 
 ```plaintext
-podinfo/
+k8s-app/podinfo/
 ├── base/                              # Base manifests
 │   ├── deployment.yaml                # Podinfo + nginx sidecar
 │   ├── service.yaml
@@ -62,7 +62,7 @@ podinfo/
 
 ### Environment Promotion Flow
 
-1. **Update Base**: Change manifests in `base/`
+1. **Update Base**: Change manifests in `k8s-app/podinfo/base/`
 2. **Dev Syncs First**: Flux syncs to `podinfo-dev` namespace
 3. **Staging Syncs After Dev**: Due to `dependsOn`, staging waits for dev
 4. **Prod Syncs After Staging**: Prod waits for staging to be healthy
@@ -146,7 +146,7 @@ curl http://$ALB_URL/podinfo-prod      # Prod environment
 ## 🎨 Environment Differences
 
 | Environment | Replicas | Color | Resources | Namespace | Path |
-| ----------- | --------- | ------ | ---------- | ---------- | ----- |
+|------------|----------|-------|-----------|-----------|------|
 | **Dev** | 1 | Red (#ff6b6b) | 200m CPU, 256Mi RAM | podinfo-dev | `/podinfo-dev` |
 | **Staging** | 2 | Yellow (#ffc107) | 300m CPU, 384Mi RAM | podinfo-staging | `/podinfo-staging` |
 | **Prod** | 3 | Green (#6bcf7f) | 500m CPU, 512Mi RAM | podinfo-prod | `/podinfo-prod` |
@@ -178,48 +178,56 @@ This allows all three environments to be accessible simultaneously via different
 ## 💼 Real-World Use Cases
 
 ### 1. **Software Development Lifecycle (SDLC)**
+
 - **Dev**: Developers test new features quickly (1 replica, minimal resources)
 - **Staging**: QA team validates before production (2 replicas, moderate resources)
 - **Prod**: Production workload with high availability (3+ replicas, full resources)
 - **Benefit**: Safe, automated promotion from dev → staging → prod
 
 ### 2. **Feature Flag Testing**
+
 - Deploy feature branches to dev environment
 - Promote to staging for integration testing
 - Only promote to prod after validation
 - **Benefit**: Catch issues early, reduce production incidents
 
 ### 3. **Compliance & Auditing**
+
 - All changes tracked in Git (audit trail)
 - Promotion requires successful health checks
 - Can't skip environments (dependency enforcement)
 - **Benefit**: Meets regulatory requirements (SOC2, HIPAA, etc.)
 
 ### 4. **Multi-Tenant Applications**
+
 - Different environments for different customers/regions
 - Same codebase, different configurations
 - Isolated namespaces for security
 - **Benefit**: Efficient resource usage, easy scaling
 
 ### 5. **Blue/Green Deployments**
+
 - Staging can serve as "green" environment
 - Prod is "blue" environment
 - Test new version in staging, then promote
 - **Benefit**: Zero-downtime deployments
 
 ### 6. **Cost Optimization**
+
 - Dev: Minimal resources (cost-effective for development)
 - Staging: Moderate resources (realistic testing)
 - Prod: Full resources (production workload)
 - **Benefit**: Reduce cloud costs while maintaining quality
 
 ### 7. **Team Collaboration**
+
 - Developers work in dev environment
 - QA team uses staging environment
 - Operations manages prod environment
 - **Benefit**: Clear separation of concerns, reduced conflicts
 
 ### 8. **Disaster Recovery Testing**
+
 - Regularly promote to staging to test recovery procedures
 - Validate backup/restore processes
 - **Benefit**: Confidence in disaster recovery capabilities
@@ -227,6 +235,7 @@ This allows all three environments to be accessible simultaneously via different
 ## 🎯 When to Use This Pattern
 
 ### ✅ **Good Fit For:**
+
 - Organizations with multiple environments
 - Teams needing automated promotion workflows
 - Applications requiring compliance/auditing
@@ -236,6 +245,7 @@ This allows all three environments to be accessible simultaneously via different
 - Multi-tenant SaaS applications
 
 ### ⚠️ **Consider Alternatives If:**
+
 - Single environment deployments
 - Very simple applications (overkill)
 - No need for environment promotion
@@ -252,7 +262,8 @@ The nginx sidecar for path rewriting is useful when:
 4. **Path-Based Routing**: Different environments on same ALB
 5. **Backward Compatibility**: Maintain old URLs while migrating
 
-### Alternative Approaches:
+### Alternative Approaches
+
 - **NGINX Ingress Controller**: If you can use it instead of ALB
 - **Service Mesh** (Istio/Linkerd): More advanced routing capabilities
 - **API Gateway** (Kong, Ambassador): Enterprise-grade routing
@@ -269,3 +280,4 @@ The nginx sidecar for path rewriting is useful when:
 ✅ **Reconciliation Status**
 ✅ **Weave GitOps UI Integration**
 ✅ **Sidecar Pattern** (nginx for path rewriting)
+
