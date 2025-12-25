@@ -32,3 +32,29 @@ patches:
       - op: replace
         path: /metadata/annotations/alb.ingress.kubernetes.io~1group.order
         value: "10"
+  - target:
+      kind: ConfigMap
+      name: nginx-sidecar-config
+    patch: |-
+      - op: replace
+        path: /data/nginx.conf
+        value: |
+          events {
+              worker_connections 1024;
+          }
+          http {
+              upstream podinfo {
+                  server localhost:9898;
+              }
+              server {
+                  listen 8080;
+                  location /podinfo-dev {
+                      rewrite ^/podinfo-dev(.*)$ /$1 break;
+                      proxy_pass http://podinfo;
+                      proxy_set_header Host $host;
+                      proxy_set_header X-Real-IP $remote_addr;
+                      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                      proxy_set_header X-Forwarded-Proto $scheme;
+                  }
+              }
+          }

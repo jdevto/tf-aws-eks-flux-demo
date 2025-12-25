@@ -5,6 +5,7 @@ kind: Kustomization
 # Do not set namespace here to allow overlays to set it
 
 resources:
+  - nginx-sidecar-configmap.yaml
   - deployment.yaml
   - service.yaml
   - ingress.yaml
