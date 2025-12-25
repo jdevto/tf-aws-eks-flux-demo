@@ -20,9 +20,10 @@ This demo showcases **advanced Flux GitOps capabilities**:
 
 ### 3. **Kustomize Overlays**
 
-- Base manifests in `base/`
+- Base manifests in `base/` (includes podinfo + nginx sidecar)
 - Environment-specific overlays in `dev/`, `staging/`, `prod/`
-- Different replicas, resources, and configurations per environment
+- Different replicas, resources, configurations, and ingress paths per environment
+- Nginx sidecar handles path rewriting for ALB compatibility
 
 ### 4. **Health Monitoring**
 
@@ -34,23 +35,27 @@ This demo showcases **advanced Flux GitOps capabilities**:
 
 ```plaintext
 podinfo/
-├── base/                    # Base manifests
-│   ├── deployment.yaml
+├── base/                              # Base manifests
+│   ├── deployment.yaml                # Podinfo + nginx sidecar
 │   ├── service.yaml
 │   ├── ingress.yaml
+│   ├── nginx-sidecar-configmap.yaml   # Nginx config for path rewriting
 │   └── kustomization.yaml
-├── dev/                     # Dev overlay (1 replica, red)
+├── dev/                               # Dev overlay (1 replica, red)
+│   ├── namespace.yaml
 │   └── kustomization.yaml
-├── staging/                 # Staging overlay (2 replicas, yellow)
+├── staging/                           # Staging overlay (2 replicas, yellow)
+│   ├── namespace.yaml
 │   └── kustomization.yaml
-├── prod/                    # Prod overlay (3 replicas, green)
+├── prod/                              # Prod overlay (3 replicas, green)
+│   ├── namespace.yaml
 │   └── kustomization.yaml
-├── image-repository.yaml    # Watches container registry
-├── image-policy.yaml        # Defines image version policy
-├── image-update-automation.yaml  # Auto-updates Git
-├── kustomization-dev.yaml   # Flux Kustomization for dev
-├── kustomization-staging.yaml # Flux Kustomization for staging
-└── kustomization-prod.yaml  # Flux Kustomization for prod
+├── image-repository.yaml              # Watches container registry
+├── image-policy.yaml                  # Defines image version policy
+├── image-update-automation.yaml       # Auto-updates Git
+├── kustomization-dev.yaml             # Flux Kustomization for dev
+├── kustomization-staging.yaml         # Flux Kustomization for staging
+└── kustomization-prod.yaml            # Flux Kustomization for prod
 ```
 
 ## 🚀 How It Works
@@ -111,9 +116,16 @@ kubectl get kustomization podinfo-prod -n flux-system
 # Get ALB URL
 ALB_URL=$(kubectl get ingress -A -o jsonpath='{.items[0].status.loadBalancer.ingress[0].hostname}')
 
-# Access podinfo (all environments use same path, different namespaces)
-curl http://$ALB_URL/podinfo
+# Access each environment via different paths
+curl http://$ALB_URL/podinfo-dev      # Dev environment
+curl http://$ALB_URL/podinfo-staging   # Staging environment
+curl http://$ALB_URL/podinfo-prod      # Prod environment
 ```
+
+**Note:** Each environment uses a different path because:
+- ALB doesn't support path rewriting natively
+- An nginx sidecar container rewrites paths: `/podinfo-{env}/*` → `/*`
+- This allows all three environments to be accessible simultaneously
 
 ### Test Image Automation
 
@@ -132,11 +144,11 @@ curl http://$ALB_URL/podinfo
 
 ## 🎨 Environment Differences
 
-| Environment | Replicas | Color | Resources | Namespace |
-|------------|----------|-------|-----------|-----------|
-| **Dev** | 1 | Red (#ff6b6b) | 200m CPU, 256Mi RAM | podinfo-dev |
-| **Staging** | 2 | Yellow (#ffd93d) | 300m CPU, 384Mi RAM | podinfo-staging |
-| **Prod** | 3 | Green (#6bcf7f) | 500m CPU, 512Mi RAM | podinfo-prod |
+| Environment | Replicas | Color | Resources | Namespace | Path |
+|------------|----------|-------|-----------|-----------|------|
+| **Dev** | 1 | Red (#ff6b6b) | 200m CPU, 256Mi RAM | podinfo-dev | `/podinfo-dev` |
+| **Staging** | 2 | Yellow (#ffc107) | 300m CPU, 384Mi RAM | podinfo-staging | `/podinfo-staging` |
+| **Prod** | 3 | Green (#6bcf7f) | 500m CPU, 512Mi RAM | podinfo-prod | `/podinfo-prod` |
 
 ## 🔄 Promotion Workflow
 
@@ -149,6 +161,18 @@ To promote changes:
    - Staging syncs after dev is healthy
    - Prod syncs after staging is healthy
 
+## 🏗️ Architecture Details
+
+### Nginx Sidecar for Path Rewriting
+
+Since AWS ALB doesn't support path rewriting natively, each podinfo pod includes an nginx sidecar container that:
+- Listens on port 8080 (service targets this port)
+- Rewrites paths: `/podinfo-{env}/*` → `/*` for podinfo
+- Proxies requests to the podinfo container on port 9898
+- Environment-specific nginx config is patched via Kustomize
+
+This allows all three environments to be accessible simultaneously via different paths on the same ALB.
+
 ## 📊 Key Flux Features Demonstrated
 
 ✅ **Multi-Environment Management**
@@ -159,3 +183,4 @@ To promote changes:
 ✅ **Git-based Workflows**
 ✅ **Reconciliation Status**
 ✅ **Weave GitOps UI Integration**
+✅ **Sidecar Pattern** (nginx for path rewriting)
