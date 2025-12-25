@@ -1,10 +1,42 @@
 # Kubernetes Application Manifests
 
-This directory contains Kubernetes manifests for applications managed by Flux.
+This directory contains Kubernetes manifests for applications managed by Flux GitOps.
+
+## Applications
+
+### Podinfo - Multi-Environment GitOps
+**Location:** `k8s-app/podinfo/`
+
+Advanced Flux GitOps demonstration featuring:
+- Multi-environment promotion (Dev → Staging → Prod)
+- Image automation with automatic Git commits
+- Kustomize overlays for environment-specific configurations
+- Dependency management between environments
+- Health monitoring and reconciliation status
+
+**Environments:**
+- `podinfo-dev` - Development (1 replica, red theme)
+- `podinfo-staging` - Staging (2 replicas, yellow theme)
+- `podinfo-prod` - Production (3 replicas, green theme)
+
+### Simple App - Basic GitOps
+**Location:** `k8s-app/simple-app/`
+
+Basic GitOps sync demonstration showing how Flux automatically syncs Kubernetes resources from Git.
+
+### Weave GitOps - GitOps UI
+**Location:** `k8s-app/weave-gitops/`
+
+Weave GitOps Core provides a web UI for managing Flux GitOps workflows, viewing sources, applications, and image automation.
+
+### Welcome Page
+**Location:** `k8s-app/welcome/`
+
+Landing page with links to all demo applications.
 
 ## ALB Configuration
 
-Both `nginx-demo` and `go-demo` use **shared ALB** via Ingress resources instead of LoadBalancer Services.
+All applications use **shared ALB** via Ingress resources instead of LoadBalancer Services.
 
 ### Key Points
 
@@ -13,14 +45,14 @@ Both `nginx-demo` and `go-demo` use **shared ALB** via Ingress resources instead
    - Services are only used for internal routing
 
 2. **Shared ALB via IngressGroup**
-   - Both Ingresses use `alb.ingress.kubernetes.io/group.name: demo-apps`
+   - All Ingresses use `alb.ingress.kubernetes.io/group.name: demo-apps`
    - This ensures they share the same ALB instance
    - More cost-effective than separate ALBs
 
 3. **Path-based Routing**
-   - `/nginx-demo/*` → nginx-demo service
-   - `/go-demo/*` → go-demo service
-   - `/` → nginx-demo (default)
+   - `/` → Welcome page
+   - `/podinfo` → Podinfo application
+   - `/simple` → Simple app
 
 ### Example Service (ClusterIP)
 
@@ -28,14 +60,14 @@ Both `nginx-demo` and `go-demo` use **shared ALB** via Ingress resources instead
 apiVersion: v1
 kind: Service
 metadata:
-  name: nginx-demo
+  name: my-app
 spec:
   type: ClusterIP  # NOT LoadBalancer
   ports:
     - port: 80
-      targetPort: 80
+      targetPort: 8080
   selector:
-    app: nginx-demo
+    app: my-app
 ```
 
 ### Ingress Annotations Explained
@@ -45,33 +77,14 @@ spec:
 - `alb.ingress.kubernetes.io/scheme: internet-facing` - Public ALB
 - `alb.ingress.kubernetes.io/target-type: ip` - Direct pod IP targeting
 
-### Alternative: Host-based Routing
-
-If you prefer host-based routing instead of path-based:
-
-```yaml
-spec:
-  rules:
-    - host: nginx-demo.example.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: nginx-demo
-                port:
-                  number: 80
-```
-
 ### Verifying ALB
 
 After deployment, check the Ingress:
 
 ```bash
-kubectl get ingress
-kubectl describe ingress nginx-demo
-kubectl describe ingress go-demo
+kubectl get ingress -A
+kubectl describe ingress podinfo -n podinfo-dev
+kubectl describe ingress simple-app
 ```
 
-The `ADDRESS` field will show the ALB DNS name. Both Ingresses should show the same ALB address when using the same group name.
+The `ADDRESS` field will show the ALB DNS name. All Ingresses should show the same ALB address when using the same group name.

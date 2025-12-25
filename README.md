@@ -11,9 +11,10 @@ Terraform demo for Amazon EKS with Flux GitOps.
   * Flux (installed via Helm)
   * Flux Workloads (bootstraps `GitRepository` and `Kustomization` CRs via `modules/flux-workloads`)
 * **Flux** then fully manages **sample workloads**:
-  * **nginx-demo** (nginx-based) from `k8s-app/nginx-demo`
-  * **go-demo** (Go-based with rate limiting) from `k8s-app/go-demo`
+  * **podinfo** (multi-environment GitOps with image automation) from `k8s-app/podinfo`
+  * **simple-app** (basic GitOps sync demo) from `k8s-app/simple-app`
   * **weave-gitops** (GitOps UI) from `k8s-app/weave-gitops`
+  * **welcome** (landing page) from `k8s-app/welcome`
   * All use **Ingress resources with shared ALB** (not LoadBalancer Services)
 
 ## Repo structure
@@ -32,9 +33,10 @@ Terraform demo for Amazon EKS with Flux GitOps.
 │   ├── flux
 │   └── flux-workloads
 └── k8s-app
-    ├── nginx-demo
-    ├── go-demo
-    └── weave-gitops
+    ├── podinfo
+    ├── simple-app
+    ├── weave-gitops
+    └── welcome
 
 ```
 
@@ -55,7 +57,7 @@ Recommended: pass it on apply:
 terraform apply -var='repo_url=https://github.com/<you>/<this-repo>.git'
 ```
 
-The Flux Kustomizations will point at `k8s-app/nginx-demo`, `k8s-app/go-demo`, and `k8s-app/weave-gitops` in that repo.
+The Flux Kustomizations will point at `k8s-app/podinfo`, `k8s-app/simple-app`, `k8s-app/weave-gitops`, and `k8s-app/welcome` in that repo.
 
 ## Run the demo
 
@@ -99,8 +101,8 @@ Check Kustomization status:
 
 ```bash
 kubectl get kustomization -n flux-system
-kubectl describe kustomization nginx-demo -n flux-system
-kubectl describe kustomization go-demo -n flux-system
+kubectl describe kustomization podinfo-dev -n flux-system
+kubectl describe kustomization simple-app -n flux-system
 kubectl describe kustomization weave-gitops -n flux-system
 ```
 
@@ -111,8 +113,8 @@ Both apps share a single ALB via Ingress resources:
 ```bash
 # Check Ingress resources (they share the same ALB)
 kubectl get ingress
-kubectl describe ingress nginx-demo
-kubectl describe ingress go-demo
+kubectl describe ingress podinfo -n podinfo-dev
+kubectl describe ingress simple-app
 
 # The ADDRESS field shows the shared ALB DNS name
 # Both Ingresses should show the same ALB address

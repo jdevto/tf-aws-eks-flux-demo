@@ -29,7 +29,7 @@ Instead of using Kubernetes `Service` type `LoadBalancer` (which creates Classic
 
 ### 2. Ingress Resources
 
-**Location:** `k8s-app/nginx-demo/ingress.yaml` and `k8s-app/go-demo/ingress.yaml`
+**Location:** `k8s-app/podinfo/base/ingress.yaml` and `k8s-app/simple-app/ingress.yaml`
 
 **Key Annotations:**
 
@@ -40,7 +40,7 @@ Instead of using Kubernetes `Service` type `LoadBalancer` (which creates Classic
 
 **Routing:**
 
-- Path-based routing: `/nginx-demo/*` → nginx-demo, `/go-demo/*` → go-demo
+- Path-based routing: `/podinfo` → podinfo, `/simple` → simple-app, `/` → welcome
 - Alternative: Host-based routing (see `k8s-app/README.md`)
 
 ### 3. Services
@@ -51,14 +51,14 @@ Instead of using Kubernetes `Service` type `LoadBalancer` (which creates Classic
 apiVersion: v1
 kind: Service
 metadata:
-  name: nginx-demo
+  name: podinfo
 spec:
   type: ClusterIP  # NOT LoadBalancer
   ports:
     - port: 80
       targetPort: 80
   selector:
-    app: nginx-demo
+    app: podinfo
 ```
 
 ## Why This Approach?
@@ -119,8 +119,8 @@ kubectl get pods -n kube-system -l app.kubernetes.io/name=aws-load-balancer-cont
 kubectl get ingress
 
 # Both should show the same ALB address
-kubectl describe ingress nginx-demo
-kubectl describe ingress go-demo
+kubectl describe ingress podinfo -n podinfo-dev
+kubectl describe ingress simple-app
 ```
 
 ## Troubleshooting

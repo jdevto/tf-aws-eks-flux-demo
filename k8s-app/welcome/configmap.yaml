@@ -99,19 +99,41 @@ data:
         <div class="container">
             <h1>🚀 Flux GitOps Demo</h1>
             <p class="subtitle">Welcome to the EKS + Flux + Weave GitOps demonstration</p>
+            <p style="color: #666; margin-bottom: 30px; font-size: 0.95em;">
+                This demo showcases advanced Flux GitOps capabilities including multi-environment promotion,
+                image automation, and GitOps workflows.
+            </p>
 
             <div class="apps">
                 <a href="/podinfo" class="app-card">
                     <div class="app-title">Podinfo - Multi-Environment GitOps</div>
-                    <div class="app-description">Advanced Flux features: Multi-env promotion, Image automation, Kustomize overlays</div>
+                    <div class="app-description">
+                        <strong>Advanced Flux Features:</strong><br>
+                        • Multi-environment promotion (Dev → Staging → Prod)<br>
+                        • Image automation with automatic Git commits<br>
+                        • Kustomize overlays for environment-specific configs<br>
+                        • Dependency management between environments<br>
+                        • Health monitoring and reconciliation status
+                    </div>
                     <span class="badge badge-bluegreen">Dev → Staging → Prod</span>
                 </a>
 
                 <a href="/simple" class="app-card">
                     <div class="app-title">Simple App</div>
-                    <div class="app-description">Basic GitOps sync demonstration</div>
+                    <div class="app-description">
+                        Basic GitOps sync demonstration showing how Flux automatically
+                        syncs Kubernetes resources from Git.
+                    </div>
                     <span class="badge badge-canary">Basic GitOps</span>
                 </a>
+            </div>
+
+            <div style="margin-top: 40px; padding-top: 30px; border-top: 1px solid #e9ecef;">
+                <h3 style="color: #333; margin-bottom: 15px; font-size: 1.2em;">📊 View in Weave GitOps</h3>
+                <p style="color: #666; font-size: 0.9em;">
+                    Access the Weave GitOps UI to see all Flux resources, sources, and applications
+                    with their reconciliation status and health checks.
+                </p>
             </div>
         </div>
     </body>
