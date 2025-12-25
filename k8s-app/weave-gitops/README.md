@@ -27,10 +27,36 @@ If Ingress is enabled, access via the ALB URL:
 kubectl get ingress -n flux-system weave-gitops
 ```
 
+## Secret Management
+
+The `cluster-user-auth` secret is automatically managed by **External Secrets Operator** (ESO), which syncs from **AWS Secrets Manager**.
+
+### How It Works
+
+1. **Terraform** creates the secret in AWS Secrets Manager (`modules/external-secrets`)
+2. **External Secrets Operator** (installed via Terraform) syncs the secret to Kubernetes
+3. **Weave GitOps** deployment uses the synced secret automatically
+
+### Updating the Password
+
+Update the password in AWS Secrets Manager:
+
+```bash
+# Generate new bcrypt hash
+PASSWORD_HASH=$(echo -n "new-password" | gitops get bcrypt-hash)
+
+# Update in AWS Secrets Manager (secret name from Terraform output)
+aws secretsmanager update-secret \
+  --secret-id <cluster-name>/weave-gitops/cluster-user-auth \
+  --secret-string "{\"username\":\"admin\",\"password\":\"$PASSWORD_HASH\"}"
+```
+
+External Secrets Operator will automatically sync the updated secret to Kubernetes.
+
 ## Default Credentials
 
 - Username: `admin`
-- Password: Check the secret or use the gitops CLI to set it
+- Password: Set when creating the `cluster-user-auth` secret
 
 ## Features
 

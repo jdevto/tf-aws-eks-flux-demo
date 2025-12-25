@@ -9,3 +9,9 @@ variable "helm_values" {
   type        = string
   default     = null
 }
+
+variable "weave_gitops_username" {
+  description = "Username for Weave GitOps cluster user authentication"
+  type        = string
+  default     = "admin"
+}
