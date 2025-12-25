@@ -19,8 +19,6 @@ spec:
         paths:
           - path: /podinfo
             pathType: Prefix
-            path: /podinfo/
-            pathType: Prefix
             backend:
               service:
                 name: podinfo

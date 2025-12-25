@@ -25,6 +25,8 @@ spec:
               value: "#34577c"
             - name: PODINFO_UI_MESSAGE
               value: "Welcome to Podinfo - Managed by Flux GitOps"
+            - name: PODINFO_UIPATH
+              value: "/podinfo"
           resources:
             requests:
               cpu: 100m
