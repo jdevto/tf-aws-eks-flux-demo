@@ -31,6 +31,9 @@ module "eks" {
 module "flux" {
   source = "./modules/flux"
 
+  # Cluster dependency - ensures proper ordering
+  cluster_endpoint = module.eks.cluster_endpoint
+
   weave_gitops_username = var.weave_gitops_username
 
   # Workloads configuration
@@ -67,4 +70,3 @@ module "flux" {
 
   depends_on = [module.eks]
 }
-

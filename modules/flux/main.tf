@@ -10,6 +10,15 @@ resource "kubernetes_namespace" "flux_system" {
       "app.kubernetes.io/component" = "system"
     }
   }
+
+  # Explicit dependency on cluster endpoint ensures:
+  # 1. Namespace is created only after cluster is ready
+  # 2. Namespace is deleted before cluster during destroy
+  lifecycle {
+    replace_triggered_by = [
+      var.cluster_endpoint
+    ]
+  }
 }
 
 # Install Flux via Helm

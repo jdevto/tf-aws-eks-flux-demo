@@ -16,6 +16,11 @@ variable "weave_gitops_username" {
   default     = "admin"
 }
 
+variable "cluster_endpoint" {
+  description = "EKS cluster endpoint URL. Used as explicit dependency to ensure cluster is ready before creating resources."
+  type        = string
+}
+
 # Workloads configuration
 variable "repo_url" {
   description = "Git repository URL containing the workload manifests"
