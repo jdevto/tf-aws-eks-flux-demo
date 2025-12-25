@@ -1,6 +1,11 @@
 # Flux module - Install Flux v2 via Helm and bootstrap workloads
 # This module installs Flux and optionally bootstraps GitRepository and Kustomizations
 
+# Local to reference cluster endpoint - creates explicit dependency
+locals {
+  cluster_endpoint = var.cluster_endpoint
+}
+
 resource "kubernetes_namespace" "flux_system" {
   metadata {
     name = "flux-system"
@@ -9,15 +14,12 @@ resource "kubernetes_namespace" "flux_system" {
       "app.kubernetes.io/instance"  = "flux"
       "app.kubernetes.io/component" = "system"
     }
-  }
-
-  # Explicit dependency on cluster endpoint ensures:
-  # 1. Namespace is created only after cluster is ready
-  # 2. Namespace is deleted before cluster during destroy
-  lifecycle {
-    replace_triggered_by = [
-      var.cluster_endpoint
-    ]
+    # Reference cluster_endpoint in annotations to create explicit dependency
+    # This ensures namespace is created only after cluster is ready
+    # and deleted before cluster during destroy
+    annotations = {
+      "cluster-endpoint" = local.cluster_endpoint
+    }
   }
 }
 
