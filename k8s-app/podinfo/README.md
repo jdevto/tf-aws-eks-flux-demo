@@ -5,30 +5,34 @@ This demo showcases **advanced Flux GitOps capabilities**:
 ## 🎯 What This Demonstrates
 
 ### 1. **Multi-Environment GitOps Promotion**
+
 - **Dev** → **Staging** → **Prod** environments
 - Each environment has different configurations (replicas, resources, colors)
 - Dependencies: Staging depends on Dev, Prod depends on Staging
 - Git-based promotion workflow
 
 ### 2. **Image Automation**
+
 - **ImageRepository**: Watches `ghcr.io/stefanprodan/podinfo` for new versions
 - **ImagePolicy**: Uses semver policy (>=6.0.0)
 - **ImageUpdateAutomation**: Automatically commits image updates to Git
 - Flux creates Git commits when new images are available
 
 ### 3. **Kustomize Overlays**
+
 - Base manifests in `base/`
 - Environment-specific overlays in `dev/`, `staging/`, `prod/`
 - Different replicas, resources, and configurations per environment
 
 ### 4. **Health Monitoring**
+
 - Health checks configured for each environment
 - Flux monitors deployment health
 - Visible in Weave GitOps UI
 
 ## 📁 Structure
 
-```
+```plaintext
 podinfo/
 ├── base/                    # Base manifests
 │   ├── deployment.yaml
@@ -70,15 +74,15 @@ podinfo/
 
 In Weave GitOps UI, you'll see:
 
-- **Sources**: 
+- **Sources**:
   - `tf-aws-eks-flux-demo` (GitRepository)
   - `podinfo` (ImageRepository)
-  
+
 - **Applications**:
   - `podinfo-dev` (Kustomization)
   - `podinfo-staging` (Kustomization)
   - `podinfo-prod` (Kustomization)
-  
+
 - **Image Automation**:
   - `podinfo` (ImagePolicy)
   - `podinfo` (ImageUpdateAutomation)
@@ -114,6 +118,7 @@ curl http://$ALB_URL/podinfo
 ### Test Image Automation
 
 1. Check current image version:
+
    ```bash
    kubectl get imagerepository podinfo -n flux-system -o yaml
    ```
@@ -139,19 +144,18 @@ To promote changes:
 
 1. **Update Base**: Modify files in `k8s-app/podinfo/base/`
 2. **Commit & Push**: `git commit && git push`
-3. **Watch Sync**: 
+3. **Watch Sync**:
    - Dev syncs first (5 min interval)
    - Staging syncs after dev is healthy
    - Prod syncs after staging is healthy
 
 ## 📊 Key Flux Features Demonstrated
 
-✅ **Multi-Environment Management**  
-✅ **Kustomize Overlays**  
-✅ **Dependency Management** (dependsOn)  
-✅ **Image Automation**  
-✅ **Health Monitoring**  
-✅ **Git-based Workflows**  
-✅ **Reconciliation Status**  
+✅ **Multi-Environment Management**
+✅ **Kustomize Overlays**
+✅ **Dependency Management** (dependsOn)
+✅ **Image Automation**
+✅ **Health Monitoring**
+✅ **Git-based Workflows**
+✅ **Reconciliation Status**
 ✅ **Weave GitOps UI Integration**
-

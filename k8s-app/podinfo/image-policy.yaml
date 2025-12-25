@@ -9,8 +9,7 @@ spec:
     name: podinfo
   policy:
     semver:
-      range: '>=6.0.0'  # Accept any version 6.0.0 or higher
+      range: ">=6.0.0" # Accept any version 6.0.0 or higher
   filterTags:
-    pattern: '^6\.[0-9]+\.[0-9]+$'  # Only match 6.x.x versions
-    extract: '$1'
-
+    pattern: '^6\.[0-9]+\.[0-9]+$' # Only match 6.x.x versions
+    extract: "$1"

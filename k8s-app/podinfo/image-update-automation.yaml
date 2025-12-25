@@ -17,10 +17,9 @@ spec:
       author:
         name: fluxcdbot
         email: fluxcdbot@users.noreply.github.com
-      messageTemplate: '{{range .Updated.Images}}{{println .}}{{end}}'
+      messageTemplate: "{{range .Updated.Images}}{{println .}}{{end}}"
     push:
       branch: main
   update:
     path: ./k8s-app/podinfo
     strategy: Setters
-

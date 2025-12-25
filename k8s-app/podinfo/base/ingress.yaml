@@ -23,4 +23,3 @@ spec:
                 name: podinfo
                 port:
                   number: 80
-
