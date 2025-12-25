@@ -31,12 +31,9 @@ spec:
           args:
             - --tls-cert-file=/etc/tls/tls.crt
             - --tls-private-key-file=/etc/tls/tls.key
-            - --enable-flux-resources=true
           env:
             - name: GITOPS_NAMESPACE
               value: flux-system
-            - name: WATCH_ALL_NAMESPACES
-              value: "true"
           volumeMounts:
             - name: tls-certs
               mountPath: /etc/tls
