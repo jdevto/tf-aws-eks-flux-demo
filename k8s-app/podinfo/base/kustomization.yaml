@@ -9,5 +9,9 @@ resources:
   - service.yaml
   - ingress.yaml
 
+# Add annotation to ingress so we can selectively exclude it in overlays
+commonAnnotations:
+  kustomize.config.k8s.io/Resource: "ingress"
+
 commonLabels:
   app: podinfo

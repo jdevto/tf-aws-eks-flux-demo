@@ -5,9 +5,11 @@ This directory contains Kubernetes manifests for applications managed by Flux Gi
 ## Applications
 
 ### Podinfo - Multi-Environment GitOps
+
 **Location:** `k8s-app/podinfo/`
 
 Advanced Flux GitOps demonstration featuring:
+
 - Multi-environment promotion (Dev → Staging → Prod)
 - Image automation with automatic Git commits
 - Kustomize overlays for environment-specific configurations
@@ -15,21 +17,25 @@ Advanced Flux GitOps demonstration featuring:
 - Health monitoring and reconciliation status
 
 **Environments:**
+
 - `podinfo-dev` - Development (1 replica, red theme)
 - `podinfo-staging` - Staging (2 replicas, yellow theme)
 - `podinfo-prod` - Production (3 replicas, green theme)
 
 ### Simple App - Basic GitOps
+
 **Location:** `k8s-app/simple-app/`
 
 Basic GitOps sync demonstration showing how Flux automatically syncs Kubernetes resources from Git.
 
 ### Weave GitOps - GitOps UI
+
 **Location:** `k8s-app/weave-gitops/`
 
 Weave GitOps Core provides a web UI for managing Flux GitOps workflows, viewing sources, applications, and image automation.
 
 ### Welcome Page
+
 **Location:** `k8s-app/welcome/`
 
 Landing page with links to all demo applications.
