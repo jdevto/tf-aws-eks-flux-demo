@@ -21,7 +21,7 @@ spec:
         paths:
           # Root path serves welcome page
           - path: /
-            pathType: Exact
+            pathType: Prefix
             backend:
               service:
                 name: welcome
