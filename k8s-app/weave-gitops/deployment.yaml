@@ -1,6 +1,9 @@
 # Weave GitOps Core - Deployment
 # Install using the official installation method
 # Reference: https://docs.gitops.weave.works/docs/open-source/getting-started/install-OSS/
+#
+# The cluster-user-auth secret is created by the Flux Terraform module (modules/flux)
+# Weave GitOps automatically detects and uses this secret for authentication
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -28,6 +31,16 @@ spec:
           env:
             - name: GITOPS_NAMESPACE
               value: flux-system
+            - name: CLUSTER_USER_AUTH_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: cluster-user-auth
+                  key: username
+            - name: CLUSTER_USER_AUTH_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: cluster-user-auth
+                  key: password
           resources:
             limits:
               cpu: 500m
@@ -65,6 +78,10 @@ rules:
   - apiGroups: [""]
     resources: ["*"]
     verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "list", "watch"]
+    resourceNames: ["cluster-user-auth"]
   - apiGroups: ["apps"]
     resources: ["*"]
     verbs: ["get", "list", "watch"]
