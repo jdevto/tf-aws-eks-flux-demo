@@ -58,6 +58,38 @@ data "utilities_bcrypt_hash" "weave_gitops" {
   cost      = 10
 }
 
+# Generate TLS private key for Weave GitOps
+resource "tls_private_key" "weave_gitops_tls" {
+  algorithm = "RSA"
+  rsa_bits  = 2048
+}
+
+# Generate TLS self-signed certificate for Weave GitOps
+resource "tls_self_signed_cert" "weave_gitops_tls" {
+  private_key_pem = tls_private_key.weave_gitops_tls.private_key_pem
+
+  subject {
+    common_name  = "weave-gitops.flux-system.svc"
+    organization = "Weave GitOps"
+  }
+
+  validity_period_hours = 8760 # 1 year
+
+  allowed_uses = [
+    "key_encipherment",
+    "digital_signature",
+    "server_auth",
+  ]
+
+  dns_names = [
+    "weave-gitops",
+    "weave-gitops.flux-system",
+    "weave-gitops.flux-system.svc",
+    "weave-gitops.flux-system.svc.cluster.local",
+    "localhost",
+  ]
+}
+
 # Cluster user authentication secret for Weave GitOps
 resource "kubernetes_secret" "cluster_user_auth" {
   metadata {
@@ -79,5 +111,29 @@ resource "kubernetes_secret" "cluster_user_auth" {
   depends_on = [
     kubernetes_namespace.flux_system,
     data.utilities_bcrypt_hash.weave_gitops
+  ]
+}
+
+# TLS certificate secret for Weave GitOps
+resource "kubernetes_secret" "weave_gitops_tls" {
+  metadata {
+    name      = "weave-gitops-tls"
+    namespace = kubernetes_namespace.flux_system.metadata[0].name
+    labels = {
+      "app.kubernetes.io/name"      = "weave-gitops"
+      "app.kubernetes.io/component" = "tls"
+    }
+  }
+
+  data = {
+    "tls.crt" = tls_self_signed_cert.weave_gitops_tls.cert_pem
+    "tls.key" = tls_private_key.weave_gitops_tls.private_key_pem
+  }
+
+  type = "kubernetes.io/tls"
+
+  depends_on = [
+    kubernetes_namespace.flux_system,
+    tls_self_signed_cert.weave_gitops_tls
   ]
 }
