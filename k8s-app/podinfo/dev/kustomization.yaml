@@ -4,6 +4,7 @@ kind: Kustomization
 namespace: podinfo-dev
 
 resources:
+  - namespace.yaml
   - ../base
 
 replicas:

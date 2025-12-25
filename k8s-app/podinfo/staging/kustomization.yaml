@@ -4,6 +4,7 @@ kind: Kustomization
 namespace: podinfo-staging
 
 resources:
+  - namespace.yaml
   - ../base
 
 replicas:
