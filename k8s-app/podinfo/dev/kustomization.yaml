@@ -22,3 +22,13 @@ patches:
       - op: replace
         path: /spec/template/spec/containers/0/env/1/value
         value: "DEV Environment - Podinfo"
+  - target:
+      kind: Ingress
+      name: podinfo
+    patch: |-
+      - op: replace
+        path: /spec/rules/0/http/paths/0/path
+        value: /podinfo-dev
+      - op: replace
+        path: /metadata/annotations/alb.ingress.kubernetes.io~1group.order
+        value: "10"

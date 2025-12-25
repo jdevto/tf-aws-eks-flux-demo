@@ -105,9 +105,9 @@ data:
             </p>
 
             <div class="apps">
-                <a href="/" class="app-card" onclick="event.preventDefault(); window.location.href='http://' + window.location.host + '/'; return false;">
-                    <div class="app-title">Podinfo - Multi-Environment GitOps</div>
-                    <div class="app-description">
+                <div style="margin-bottom: 20px;">
+                    <div class="app-title" style="margin-bottom: 15px;">Podinfo - Multi-Environment GitOps</div>
+                    <div class="app-description" style="margin-bottom: 15px;">
                         <strong>Advanced Flux Features:</strong><br>
                         • Multi-environment promotion (Dev → Staging → Prod)<br>
                         • Image automation with automatic Git commits<br>
@@ -115,8 +115,12 @@ data:
                         • Dependency management between environments<br>
                         • Health monitoring and reconciliation status
                     </div>
-                    <span class="badge badge-bluegreen">Dev → Staging → Prod</span>
-                </a>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <a href="/podinfo-dev" class="badge badge-bluegreen" style="text-decoration: none; padding: 8px 16px; display: inline-block;">Dev Environment</a>
+                        <a href="/podinfo-staging" class="badge badge-bluegreen" style="text-decoration: none; padding: 8px 16px; display: inline-block;">Staging Environment</a>
+                        <a href="/podinfo-prod" class="badge badge-bluegreen" style="text-decoration: none; padding: 8px 16px; display: inline-block;">Prod Environment</a>
+                    </div>
+                </div>
 
                 <a href="/simple" class="app-card">
                     <div class="app-title">Simple App</div>

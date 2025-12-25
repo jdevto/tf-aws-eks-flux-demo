@@ -7,25 +7,28 @@ resources:
   - namespace.yaml
   - ../base
 
-# Exclude ingress from staging - only dev is exposed via ALB
+replicas:
+  - name: podinfo
+    count: 2
+
 patches:
-  - patch: |-
-      - op: replace
-        path: /spec/replicas
-        value: 2
+  - target:
+      kind: Deployment
+      name: podinfo
+    patch: |-
       - op: replace
         path: /spec/template/spec/containers/0/env/0/value
         value: "#ffc107"  # Yellow color for staging
       - op: replace
         path: /spec/template/spec/containers/0/env/1/value
         value: "STAGING Environment - Podinfo"
-    target:
-      kind: Deployment
-      name: podinfo
-
-# Remove ingress - only dev environment is exposed via ALB
-patchesJson6902:
   - target:
       kind: Ingress
       name: podinfo
-    path: remove-ingress-patch.yaml
+    patch: |-
+      - op: replace
+        path: /spec/rules/0/http/paths/0/path
+        value: /podinfo-staging
+      - op: replace
+        path: /metadata/annotations/alb.ingress.kubernetes.io~1group.order
+        value: "30"
