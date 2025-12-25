@@ -105,7 +105,7 @@ data:
             </p>
 
             <div class="apps">
-                <a href="/podinfo" class="app-card">
+                <a href="/" class="app-card" onclick="event.preventDefault(); window.location.href='http://' + window.location.host + '/'; return false;">
                     <div class="app-title">Podinfo - Multi-Environment GitOps</div>
                     <div class="app-description">
                         <strong>Advanced Flux Features:</strong><br>

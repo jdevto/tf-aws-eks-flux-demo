@@ -16,6 +16,8 @@ metadata:
     alb.ingress.kubernetes.io/unhealthy-threshold-count: "2"
     alb.ingress.kubernetes.io/load-balancer-attributes: idle_timeout.timeout_seconds=60
     alb.ingress.kubernetes.io/group.order: "100"
+    # Note: Podinfo dev now serves at root /, so welcome page is not accessible via ALB
+    # Welcome page can still be accessed via port-forward if needed
     alb.ingress.kubernetes.io/load-balancer-attributes: idle_timeout.timeout_seconds=60
 spec:
   rules:
